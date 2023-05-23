@@ -1,4 +1,4 @@
-package eco.searchexportgithubuser;
+package eco.searchexportgithubuser.sandbox;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
