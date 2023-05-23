@@ -14,4 +14,11 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <version>3.0.5</version>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
