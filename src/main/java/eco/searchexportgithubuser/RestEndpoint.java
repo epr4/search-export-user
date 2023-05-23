@@ -13,12 +13,12 @@ import java.io.IOException;
 @RestController
 public class RestEndpoint {
 
-    @GetMapping("/{token}")
-    public ResponseEntity<String> homePage(@PathVariable String token) throws DocumentException, IOException {
+    @GetMapping("/{query}")
+    public ResponseEntity<String> homePage(@PathVariable String query) throws DocumentException, IOException {
 
         RestTemplate restTemplate = new RestTemplate();
         String resourceUrl
-                = "https://api.github.com/search/users?q=Q";
+                = "https://api.github.com/search/users?q="+query;
         ResponseEntity<String> response
                 = restTemplate.getForEntity(resourceUrl, String.class);
 

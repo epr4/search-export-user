@@ -59,7 +59,7 @@ public class GithubUserPdfWriter {
         table.addCell(String.valueOf(githubUser.id));
 
 //        table.addCell(githubUser.nodeId);
-        Font fontH1 = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
+        Font fontH1 = new Font(Font.FontFamily.COURIER, 7, Font.NORMAL);
         table.addCell(new PdfPCell(new Phrase(githubUser.nodeId,fontH1)));
     }
 
