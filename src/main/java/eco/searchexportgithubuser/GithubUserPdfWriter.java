@@ -36,10 +36,15 @@ public class GithubUserPdfWriter {
         PdfPTable table = new PdfPTable(3);
         addTableHeader(table);
 
+/*
         addRows(table);
-        int row=2;
-        for (;row<=64;row++) {
+        for (int row=0; row<githubUsers.size(); row++) {
+            addRow(table,githubUsers.get(row));
             addRow(table,row);
+        }
+*/
+        for (GithubUser githubUser : githubUsers) {
+            addRow(table,githubUser);
         }
 
         addCustomRows(table);
@@ -48,11 +53,22 @@ public class GithubUserPdfWriter {
         document.close();
     }
 
+
+    private void addRow(PdfPTable table, GithubUser githubUser) {
+        table.addCell(githubUser.login);
+        table.addCell(String.valueOf(githubUser.id));
+
+//        table.addCell(githubUser.nodeId);
+        Font fontH1 = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
+        table.addCell(new PdfPCell(new Phrase(githubUser.nodeId,fontH1)));
+    }
+
+
     private void raw2UserList() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         GithubApiResponse githubApiResponse = objectMapper.readValue(raw,GithubApiResponse.class);
-        System.out.println("githubApiResponse = " + githubApiResponse);
+        githubUsers=githubApiResponse.getItems();
     }
 
     private void addRow(PdfPTable table, int row) {
@@ -62,7 +78,8 @@ public class GithubUserPdfWriter {
     }
 
     private void addTableHeader(PdfPTable table) {
-        Stream.of("column header 1", "column header 2", "column header 3")
+//        Stream.of("column header 1", "column header 2", "column header 3")
+        Stream.of("Login", "ID", "Node ID")
                 .forEach(columnTitle -> {
                     PdfPCell header = new PdfPCell();
                     header.setBackgroundColor(BaseColor.LIGHT_GRAY);
@@ -90,14 +107,22 @@ public class GithubUserPdfWriter {
         table.addCell(imageCell);
 */
 
+        PdfPCell middleAlignCell = new PdfPCell(new Phrase("row 2, col 1"));
+        middleAlignCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(middleAlignCell);
+
         PdfPCell horizontalAlignCell = new PdfPCell(new Phrase("row 2, col 2"));
         horizontalAlignCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(horizontalAlignCell);
 
+/*
         PdfPCell verticalAlignCell = new PdfPCell(new Phrase("row 2, col 3"));
         verticalAlignCell.setVerticalAlignment(Element.ALIGN_BOTTOM);
         table.addCell(verticalAlignCell);
+*/
 
+        Font fontH1 = new Font(Font.FontFamily.COURIER, 16, Font.NORMAL);
+        table.addCell(new PdfPCell(new Phrase("col 3",fontH1)));
 
     }
 
