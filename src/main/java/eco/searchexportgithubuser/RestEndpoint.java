@@ -27,8 +27,10 @@ public class RestEndpoint {
     @GetMapping("/export/{query}")
     public ResponseEntity<String> exportPdf(@PathVariable String query) throws DocumentException, IOException {
 
-        History history = new History();
-        history.setQuery(query);
+        String fileName = "iText-Table.pdf";
+
+        History history = new History(query);
+        history.setFileName(fileName);
         historyDao.save(history);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -38,7 +40,7 @@ public class RestEndpoint {
                 = restTemplate.getForEntity(resourceUrl, String.class);
 
         GithubUserPdfWriter githubUserPdfWriter = new GithubUserPdfWriter(response.getBody());
-        githubUserPdfWriter.writeToPdf();
+        githubUserPdfWriter.writeToPdf(fileName);
 
 //        return "hello "+token;
         return response;

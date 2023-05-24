@@ -24,12 +24,12 @@ public class GithubUserPdfWriter {
     }
 
 
-    public void writeToPdf() throws DocumentException, IOException {
+    public void writeToPdf(String fileName) throws DocumentException, IOException {
 
         raw2UserList();
 
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream("iTextTable.pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream(fileName));
 
         document.open();
 
