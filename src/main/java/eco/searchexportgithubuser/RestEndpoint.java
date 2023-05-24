@@ -3,7 +3,6 @@ package eco.searchexportgithubuser;
 import com.itextpdf.text.DocumentException;
 import eco.searchexportgithubuser.db.History;
 import eco.searchexportgithubuser.db.HistoryDao;
-import org.apache.pdfbox.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -12,13 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 
@@ -53,33 +49,12 @@ public class RestEndpoint {
         return historyDao.findAll();
     }
 
-    @GetMapping(value = "/donwload", produces = MediaType.APPLICATION_PDF_VALUE)
-    public @ResponseBody byte[] donwload() throws IOException {
-/*
-        InputStream in = getClass()
-//                .getResourceAsStream("/com/baeldung/produceimage/image.jpg");
-                .getResourceAsStream("iTextTable.pdf");
-*/
-        String fileName = "iTextTable.pdf";
-        InputStream in = new FileInputStream(fileName);
-        return IOUtils.toByteArray(in);
 
-/*
-        String contentType = "application/octet-stream";
-        String headerValue = "attachment; filename=\"" + fileName + "\"";
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-                .body(resource);
-*/
-    }
-
-    @GetMapping("/downloadFile/{fileCode}")
+    @GetMapping("/download/{fileCode}")
     public ResponseEntity<?> downloadFile(@PathVariable("fileCode") String fileCode) {
         FileDownloadUtil downloadUtil = new FileDownloadUtil();
 
-        Resource resource = null;
+        Resource resource;
         try {
             resource = downloadUtil.getFileAsResource(fileCode);
         } catch (IOException e) {
@@ -98,5 +73,6 @@ public class RestEndpoint {
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                 .body(resource);
     }
+
 
 }
