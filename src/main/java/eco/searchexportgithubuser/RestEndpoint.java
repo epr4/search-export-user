@@ -24,6 +24,7 @@ public class RestEndpoint {
     public ResponseEntity<String> exportPdf(@PathVariable String query) throws DocumentException, IOException {
 
         History history = new History();
+        history.setQuery(query);
         historyDao.save(history);
 
         RestTemplate restTemplate = new RestTemplate();
