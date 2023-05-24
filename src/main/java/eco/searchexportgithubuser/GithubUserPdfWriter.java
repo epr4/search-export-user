@@ -24,7 +24,7 @@ public class GithubUserPdfWriter {
     }
 
 
-    public void writeToPdf(String fileName) throws DocumentException, IOException {
+    public void writeToPdf(String fileName, String query) throws DocumentException, IOException {
 
         raw2UserList();
 
@@ -33,16 +33,17 @@ public class GithubUserPdfWriter {
 
         document.open();
 
+        Font font = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.BLACK);
+        Chunk chunk = new Chunk(query, font);
+        document.add(chunk);
+/*
+        Chunk chunk2 = new Chunk("-");
+        document.add(chunk2);
+*/
+
         PdfPTable table = new PdfPTable(3);
         addTableHeader(table);
 
-/*
-        addRows(table);
-        for (int row=0; row<githubUsers.size(); row++) {
-            addRow(table,githubUsers.get(row));
-            addRow(table,row);
-        }
-*/
         for (GithubUser githubUser : githubUsers) {
             addRow(table,githubUser);
         }

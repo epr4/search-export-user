@@ -40,7 +40,7 @@ public class RestEndpoint {
                 = restTemplate.getForEntity(resourceUrl, String.class);
 
         GithubUserPdfWriter githubUserPdfWriter = new GithubUserPdfWriter(response.getBody());
-        githubUserPdfWriter.writeToPdf(fileName);
+        githubUserPdfWriter.writeToPdf(fileName,query);
 
 //        return "hello "+token;
         return response;
