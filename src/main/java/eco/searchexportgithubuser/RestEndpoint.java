@@ -20,8 +20,8 @@ public class RestEndpoint {
     @Autowired
     HistoryDao historyDao;
 
-    @GetMapping("/{query}")
-    public ResponseEntity<String> homePage(@PathVariable String query) throws DocumentException, IOException {
+    @GetMapping("/export/{query}")
+    public ResponseEntity<String> exportPdf(@PathVariable String query) throws DocumentException, IOException {
 
         History history = new History();
         historyDao.save(history);
