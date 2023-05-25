@@ -45,13 +45,13 @@ public class RestEndpoint {
     }
 
 
-    @GetMapping("/download/{fileCode}")
-    public ResponseEntity<?> downloadFile(@PathVariable("fileCode") String fileCode) {
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<?> downloadFile(@PathVariable("fileName") String fileName) {
         FileDownloadUtil downloadUtil = new FileDownloadUtil();
 
         Resource resource;
         try {
-            resource = downloadUtil.getFileAsResource(fileCode);
+            resource = downloadUtil.getFileAsResource(fileName);
         } catch (IOException e) {
             return ResponseEntity.internalServerError().build();
         }
