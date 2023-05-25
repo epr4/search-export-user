@@ -12,6 +12,6 @@ http://localhost:8080/swagger-ui/index.html
 2. List of export history and able to download existing pdf
 
 ### ReST API endpoints as below:
-1. Search and Export PDF
+1. Search users then Export to PDF
 2. List of export history
 3. Download existing exported PDF
