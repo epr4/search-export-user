@@ -1,5 +1,6 @@
 package eco.searchexportgithubuser.db;
 
+import eco.searchexportgithubuser.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class History {
     String query;
 
     String fileName;
+
+    Status status;
 
     public History(String query) {
         this.query=query;
