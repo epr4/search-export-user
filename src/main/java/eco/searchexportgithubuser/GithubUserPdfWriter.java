@@ -1,8 +1,5 @@
 package eco.searchexportgithubuser;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -16,20 +13,27 @@ import java.util.stream.Stream;
 
 public class GithubUserPdfWriter {
 
-    String raw;
+//    String raw;
     List<GithubUser> githubUsers;
 
+    public GithubUserPdfWriter(List<GithubUser> userList) {
+        githubUsers=userList;
+    }
+/*
     public GithubUserPdfWriter(String raw) {
         this.raw=raw;
     }
+*/
 
 
     public void writeToPdf(String fileName, String query) throws DocumentException, IOException {
 
-        raw2UserList();
+//        raw2UserList();
 
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(fileName));
+        String folder="pdfs/";
+        folder="";
+        PdfWriter.getInstance(document, new FileOutputStream(folder+fileName));
 
         document.open();
 
@@ -64,13 +68,6 @@ public class GithubUserPdfWriter {
         table.addCell(new PdfPCell(new Phrase(githubUser.nodeId,fontH1)));
     }
 
-
-    private void raw2UserList() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        GithubApiResponse githubApiResponse = objectMapper.readValue(raw,GithubApiResponse.class);
-        githubUsers=githubApiResponse.getItems();
-    }
 
     private void addRow(PdfPTable table, int row) {
         table.addCell("row "+row+", col 1");
