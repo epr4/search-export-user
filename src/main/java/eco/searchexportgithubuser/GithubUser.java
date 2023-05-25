@@ -1,12 +1,12 @@
 package eco.searchexportgithubuser;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Setter;
+import lombok.Data;
 
 
-@Setter
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GithubUser {
 
     String login;

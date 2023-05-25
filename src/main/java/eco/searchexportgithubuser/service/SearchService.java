@@ -1,4 +1,4 @@
-package eco.searchexportgithubuser;
+package eco.searchexportgithubuser.service;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;

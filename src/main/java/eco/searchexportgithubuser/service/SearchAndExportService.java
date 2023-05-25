@@ -1,9 +1,13 @@
-package eco.searchexportgithubuser;
+package eco.searchexportgithubuser.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
+import eco.searchexportgithubuser.GithubApiResponse;
+import eco.searchexportgithubuser.GithubUser;
+import eco.searchexportgithubuser.GithubUserPdfWriter;
+import eco.searchexportgithubuser.Status;
 import eco.searchexportgithubuser.db.History;
 import eco.searchexportgithubuser.db.HistoryDao;
 import org.springframework.beans.factory.annotation.Autowired;

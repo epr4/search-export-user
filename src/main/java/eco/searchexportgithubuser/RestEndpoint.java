@@ -3,6 +3,7 @@ package eco.searchexportgithubuser;
 import com.itextpdf.text.DocumentException;
 import eco.searchexportgithubuser.db.History;
 import eco.searchexportgithubuser.db.HistoryDao;
+import eco.searchexportgithubuser.service.SearchAndExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
