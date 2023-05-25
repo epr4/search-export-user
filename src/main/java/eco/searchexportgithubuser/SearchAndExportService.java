@@ -8,11 +8,8 @@ import eco.searchexportgithubuser.db.History;
 import eco.searchexportgithubuser.db.HistoryDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +19,8 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class SearchAndExportService {
 
+    SearchService searchService;
+
     @Autowired
     HistoryDao historyDao;
 
@@ -29,8 +28,13 @@ public class SearchAndExportService {
     private String folder;
 
 
+    public SearchAndExportService(SearchService searchService) {
+        this.searchService = searchService;
+    }
+
+
     @Async("asyncExecutor")
-    public CompletableFuture<ResponseEntity<String>> searchAndExport(String query) throws DocumentException, IOException {
+    public CompletableFuture<List<GithubUser>> searchAndExport(String query) throws DocumentException, IOException {
         String fileName = "iText-Table.pdf";
         fileName=query+".pdf";
 
@@ -39,32 +43,24 @@ public class SearchAndExportService {
 
         history.setStatus(Status.SEARCHING);
         historyDao.save(history);
-        ResponseEntity<String> response = search(query);
+        List<GithubUser> githubUsers = search(query);
 
         history.setStatus(Status.EXPORTING);
         historyDao.save(history);
-        GithubUserPdfWriter githubUserPdfWriter = new GithubUserPdfWriter(raw2UserList(response.getBody()),folder);
+        GithubUserPdfWriter githubUserPdfWriter = new GithubUserPdfWriter(githubUsers,folder);
         githubUserPdfWriter.writeToPdf(fileName, query);
         history.setStatus(Status.DONE);
         history.setFileName(fileName);
         historyDao.save(history);
-        return CompletableFuture.completedFuture(response);
+        return CompletableFuture.completedFuture(githubUsers);
     }
 
-    @Cacheable("users")
-    private static ResponseEntity<String> search(String query) {
-        RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl
-                = "https://api.github.com/search/users?q="+ query;
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(resourceUrl, String.class);
-        return response;
-    }
 
-    private List<GithubUser> raw2UserList(String raw) throws JsonProcessingException {
+    List<GithubUser> search(String query) throws JsonProcessingException {
+        String json = searchService.search(query);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        GithubApiResponse githubApiResponse = objectMapper.readValue(raw,GithubApiResponse.class);
+        GithubApiResponse githubApiResponse = objectMapper.readValue(json,GithubApiResponse.class);
         return githubApiResponse.getItems();
     }
 

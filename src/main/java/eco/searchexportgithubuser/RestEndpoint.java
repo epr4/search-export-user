@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 
 @RestController
@@ -36,7 +35,7 @@ public class RestEndpoint {
     @GetMapping("/export")
     public String exportPdf(@RequestParam String q) throws DocumentException, IOException {
 
-        CompletableFuture<ResponseEntity<String>> response =
+//        CompletableFuture<String> response =
                 searchAndExportService.searchAndExport(q);
 
 //        return response;
