@@ -6,12 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
 import eco.searchexportgithubuser.GithubApiResponse;
 import eco.searchexportgithubuser.GithubUser;
-import eco.searchexportgithubuser.GithubUserPdfWriter;
 import eco.searchexportgithubuser.Status;
 import eco.searchexportgithubuser.db.History;
 import eco.searchexportgithubuser.db.HistoryDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -24,23 +21,21 @@ import java.util.concurrent.CompletableFuture;
 public class SearchAndExportService {
 
     SearchService searchService;
+    ExportService exportService;
 
-    @Autowired
+//    @Autowired
     HistoryDao historyDao;
 
-    @Value("${folder}")
-    private String folder;
 
-
-    public SearchAndExportService(SearchService searchService) {
+    public SearchAndExportService(SearchService searchService, ExportService exportService, HistoryDao historyDao) {
         this.searchService = searchService;
+        this.exportService = exportService;
+        this.historyDao = historyDao;
     }
 
 
     @Async("asyncExecutor")
     public CompletableFuture<List<GithubUser>> searchAndExport(String query) throws DocumentException, IOException {
-        String fileName = "iText-Table.pdf";
-        fileName=query+".pdf";
 
         History history = new History(query);
 //        history.setFileName(fileName);
@@ -51,9 +46,9 @@ public class SearchAndExportService {
 
         history.setStatus(Status.EXPORTING);
         historyDao.save(history);
-        GithubUserPdfWriter githubUserPdfWriter = new GithubUserPdfWriter(githubUsers,folder);
-        githubUserPdfWriter.writeToPdf(fileName, query);
+        exportService.export(query, githubUsers);
         history.setStatus(Status.DONE);
+        String fileName = query+".pdf";
         history.setFileName(fileName);
         historyDao.save(history);
         return CompletableFuture.completedFuture(githubUsers);

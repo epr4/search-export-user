@@ -1,6 +1,9 @@
 package eco.searchexportgithubuser.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.itextpdf.text.DocumentException;
+import eco.searchexportgithubuser.GithubUser;
+import eco.searchexportgithubuser.db.History;
+import eco.searchexportgithubuser.db.HistoryDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +12,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 
 
@@ -19,6 +27,12 @@ public class SearchAndExportServiceTest {
 
     @Mock
     SearchService searchServiceMock;
+
+    @Mock
+    ExportService exportServiceMock;
+
+    @Mock
+    HistoryDao historyDaoMock;
 
 
     @Before
@@ -30,7 +44,7 @@ public class SearchAndExportServiceTest {
     }
 
     @Test
-    public void search() throws JsonProcessingException {
+    public void searchAndExport() throws IOException, DocumentException, ExecutionException, InterruptedException {
         String sample = """
                 {
                   "total_count": 12,
@@ -59,10 +73,20 @@ public class SearchAndExportServiceTest {
                     }
                   ]
                 }""";
-        Mockito.when(searchServiceMock.search(anyString())).thenReturn(sample);
+        String login = "mojombo";
+        String query = "Q";
 
-        SearchAndExportService searchAndExportService = new SearchAndExportService(searchServiceMock);
-        assertThat(searchAndExportService.search("Q").get(0).getLogin(), is("mojombo"));
+        History history = new History();
+        Mockito.when(historyDaoMock.save(history)).thenReturn(history);
+        Mockito.when(exportServiceMock.export(anyString(),anyList())).thenReturn(true);
+        Mockito.when(searchServiceMock.search(anyString())).thenReturn(sample);
+        SearchAndExportService searchAndExportService =
+                new SearchAndExportService(searchServiceMock,exportServiceMock,historyDaoMock);
+
+        List<GithubUser> githubUsers = searchAndExportService.search(query);
+        assertThat(githubUsers.get(0).getLogin(), is(login));
+
+        assertThat(searchAndExportService.searchAndExport(query).get().get(0).getLogin(), is(login));
 
     }
 
