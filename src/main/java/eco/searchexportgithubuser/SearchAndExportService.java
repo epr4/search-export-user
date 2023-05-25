@@ -7,6 +7,7 @@ import com.itextpdf.text.DocumentException;
 import eco.searchexportgithubuser.db.History;
 import eco.searchexportgithubuser.db.HistoryDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +25,10 @@ public class SearchAndExportService {
     @Autowired
     HistoryDao historyDao;
 
+    @Value("${folder}")
+    private String folder;
+
+
     @Async("asyncExecutor")
     public CompletableFuture<ResponseEntity<String>> searchAndExport(String query) throws DocumentException, IOException {
         String fileName = "iText-Table.pdf";
@@ -38,7 +43,7 @@ public class SearchAndExportService {
 
         history.setStatus(Status.EXPORTING);
         historyDao.save(history);
-        GithubUserPdfWriter githubUserPdfWriter = new GithubUserPdfWriter(raw2UserList(response.getBody()));
+        GithubUserPdfWriter githubUserPdfWriter = new GithubUserPdfWriter(raw2UserList(response.getBody()),folder);
         githubUserPdfWriter.writeToPdf(fileName, query);
         history.setStatus(Status.DONE);
         history.setFileName(fileName);

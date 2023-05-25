@@ -4,6 +4,7 @@ import com.itextpdf.text.DocumentException;
 import eco.searchexportgithubuser.db.History;
 import eco.searchexportgithubuser.db.HistoryDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,10 @@ public class RestEndpoint {
     @Autowired
     HistoryDao historyDao;
 
+    @Value("${folder}")
+    private String folder;
+
+
     @GetMapping("/export")
     public String exportPdf(@RequestParam String q) throws DocumentException, IOException {
 
@@ -47,7 +52,7 @@ public class RestEndpoint {
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable("fileName") String fileName) {
-        FileDownloadUtil downloadUtil = new FileDownloadUtil();
+        FileDownloadUtil downloadUtil = new FileDownloadUtil(folder);
 
         Resource resource;
         try {

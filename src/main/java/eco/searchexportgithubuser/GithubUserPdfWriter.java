@@ -7,6 +7,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -16,8 +19,13 @@ public class GithubUserPdfWriter {
 //    String raw;
     List<GithubUser> githubUsers;
 
-    public GithubUserPdfWriter(List<GithubUser> userList) {
+//    @Value("${folder}")
+    private String folder;
+
+
+    public GithubUserPdfWriter(List<GithubUser> userList, String folder) {
         githubUsers=userList;
+        this.folder=folder;
     }
 /*
     public GithubUserPdfWriter(String raw) {
@@ -31,8 +39,7 @@ public class GithubUserPdfWriter {
 //        raw2UserList();
 
         Document document = new Document();
-        String folder="pdfs/";
-        folder="";
+        createFolderIfNotExist();
         PdfWriter.getInstance(document, new FileOutputStream(folder+fileName));
 
         document.open();
@@ -52,10 +59,17 @@ public class GithubUserPdfWriter {
             addRow(table,githubUser);
         }
 
-        addCustomRows(table);
+//        addCustomRows(table);
 
         document.add(table);
         document.close();
+    }
+
+    private void createFolderIfNotExist() throws IOException {
+        Path path = Paths.get(folder);
+        if (!Files.exists(path)) {
+            Files.createDirectory(path);
+        }
     }
 
 
