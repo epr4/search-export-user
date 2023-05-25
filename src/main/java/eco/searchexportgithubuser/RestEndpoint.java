@@ -46,7 +46,8 @@ public class RestEndpoint {
 
     @GetMapping("/history")
     public List<History> listHistory() {
-        return historyDao.findAll();
+//        return historyDao.findAll();
+        return historyDao.findByOrderByDateTimeDesc();
     }
 
 
